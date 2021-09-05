@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
+import { Title, Wrapper } from './App.style'
+import Card from './components/Card'
+
 const App = () => {
   const [rates, setRates] = useState({})
 
@@ -13,12 +16,11 @@ const App = () => {
     getRates()
   }, [])
 
-  console.log(rates)
-
   return (
-    <div>
-      <h1>Ready to go</h1>
-    </div>
+    <Wrapper>
+      <Title>Currency Converter App</Title>
+      <Card data={rates} />
+    </Wrapper>
   )
 }
 
