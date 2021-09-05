@@ -10,7 +10,11 @@ const App = () => {
   const [rates, setRates] = useState({})
 
   const getRates = async () => {
-    const { data } = await axios.get(process.env.REACT_APP_API_URL)
+    const { data } = await axios.get(process.env.REACT_APP_API_URL, {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    })
     setRates(data)
     setTimeout(() => {
       setLoading(false)
