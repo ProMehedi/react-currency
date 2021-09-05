@@ -13,13 +13,13 @@ import {
 } from './Card.style'
 
 const Card = ({ data }) => {
-  const { rates } = data
-
+  const [amount, setAmount] = useState('')
   const [fromCurrency, setFromCurrency] = useState('USD')
   const [toCurrency, setToCurrency] = useState('BDT')
-  const [amount, setAmount] = useState('')
   const [result, setResult] = useState(0)
   const [loading, setLoading] = useState(false)
+
+  const { rates } = data
 
   // convert Rates object to an array of objects
   const ratesArray = Object.keys(rates).map((key) => ({
@@ -28,7 +28,7 @@ const Card = ({ data }) => {
     text: key,
   }))
 
-  const exChangeInput = () => {
+  const exchangeInput = () => {
     setFromCurrency(toCurrency)
     setToCurrency(fromCurrency)
   }
@@ -36,7 +36,7 @@ const Card = ({ data }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
-    setResult(((amount * rates[toCurrency]) / rates[fromCurrency]).toFixed(3))
+    setResult(((amount * rates[toCurrency]) / rates[fromCurrency]).toFixed(2))
     if (amount === '') {
       setResult(0)
     }
@@ -55,9 +55,9 @@ const Card = ({ data }) => {
       <CardHeader>
         <h3>Exchange Rate</h3>
         <h1>
-          1 {fromCurrency} ={' '}
-          {addComma(((1 * rates[toCurrency]) / rates[fromCurrency]).toFixed(3))}{' '}
-          {toCurrency}
+          {`1 ${fromCurrency} = ${addComma(
+            ((1 * rates[toCurrency]) / rates[fromCurrency]).toFixed(2)
+          )} ${toCurrency}`}
         </h1>
       </CardHeader>
 
@@ -68,6 +68,8 @@ const Card = ({ data }) => {
             type='number'
             id='amount'
             placeholder='Enter Amount'
+            step='any'
+            min='0'
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
@@ -84,7 +86,7 @@ const Card = ({ data }) => {
                 onChange={(e, { value }) => setFromCurrency(value)}
               />
             </div>
-            <Icon title='Exhange' onClick={exChangeInput}>
+            <Icon title='Exhange' onClick={exchangeInput}>
               <img src='exchange-arrows.png' alt='' width='25' />
             </Icon>
             <div>

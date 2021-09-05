@@ -23,4 +23,8 @@ export const Wrapper = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 556px) {
+    max-width: 90%;
+  }
 `
