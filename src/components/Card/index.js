@@ -21,14 +21,17 @@ const Card = ({ data }) => {
 
   const { rates } = data
 
-  if (!rates) return null
-
   // convert Rates object to an array of objects
   const ratesArray = Object.keys(rates).map((key) => ({
     key,
     value: key,
     text: key,
   }))
+
+  const exChangeInput = () => {
+    setFrom(to)
+    setTo(from)
+  }
 
   console.log(rates[from], rates[to])
 
@@ -62,7 +65,7 @@ const Card = ({ data }) => {
               onChange={(e, { value }) => setFrom(value)}
             />
           </div>
-          <Icon title='Exhange'>
+          <Icon title='Exhange' onClick={exChangeInput}>
             <img src='exchange-arrows.png' alt='' width='25' />
           </Icon>
           <div>

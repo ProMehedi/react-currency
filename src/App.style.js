@@ -16,7 +16,7 @@ export const Title = styled.h1`
 `
 
 export const Wrapper = styled.section`
-  max-width: 550px;
+  max-width: 400px;
   margin: 0 auto;
   height: 100vh;
   display: flex;
