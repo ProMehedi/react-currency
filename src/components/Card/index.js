@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 
 import {
@@ -6,6 +6,7 @@ import {
   CardBody,
   CardHeader,
   Icon,
+  Result,
   Row,
   StyledButton,
   StyledInput,
@@ -14,15 +15,11 @@ import {
 const Card = ({ data }) => {
   const { rates } = data
 
-  const [from, setFrom] = useState('USD')
-  const [to, setTo] = useState('EUR')
+  const [fromCurrency, setFromCurrency] = useState('USD')
+  const [toCurrency, setToCurrency] = useState('BDT')
   const [amount, setAmount] = useState('')
-  const [rate, setRate] = useState(rates[data.base])
-  const [fromResult, setFromResult] = useState(0)
-  const [toResult, setToResult] = useState(0)
   const [result, setResult] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
 
   // convert Rates object to an array of objects
   const ratesArray = Object.keys(rates).map((key) => ({
@@ -32,22 +29,25 @@ const Card = ({ data }) => {
   }))
 
   const exChangeInput = () => {
-    setFrom(to)
-    setTo(from)
+    setFromCurrency(toCurrency)
+    setToCurrency(fromCurrency)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
-    setError(false)
-    setRate(rates[to])
-    setFromResult(amount * rates[from])
-    setToResult(amount * rates[to])
-    setResult(((amount * rates[to]) / rates[from]).toFixed(3))
-    setLoading(false)
-    console.log(rates[data.base])
-    console.log(data.base)
-    console.log('Amount:', amount, 'Rate:', rate, 'result:', result)
+    setResult(((amount * rates[toCurrency]) / rates[fromCurrency]).toFixed(3))
+    if (amount === '') {
+      setResult(0)
+    }
+    setTimeout(() => {
+      setLoading(false)
+    }, 300)
+  }
+
+  // Add Comma to the number
+  const addComma = (num) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
   return (
@@ -55,55 +55,60 @@ const Card = ({ data }) => {
       <CardHeader>
         <h3>Exchange Rate</h3>
         <h1>
-          1 {from} = {((1 * rates[to]) / rates[from]).toFixed(3)} {to}
+          1 {fromCurrency} ={' '}
+          {addComma(((1 * rates[toCurrency]) / rates[fromCurrency]).toFixed(3))}{' '}
+          {toCurrency}
         </h1>
-        <h4>
-          {to} {result}
-        </h4>
       </CardHeader>
 
       <CardBody>
-        <label htmlFor='amount'>Amount</label>
-        <StyledInput
-          type='number'
-          id='amount'
-          placeholder='Enter Amount'
-          min='1'
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-        <Row>
-          <div>
-            <label htmlFor='from'>From</label>
-            <Dropdown
-              placeholder='Select Country'
-              fluid
-              search
-              selection
-              options={ratesArray}
-              value={from}
-              onChange={(e, { value }) => setFrom(value)}
-            />
-          </div>
-          <Icon title='Exhange' onClick={exChangeInput}>
-            <img src='exchange-arrows.png' alt='' width='25' />
-          </Icon>
-          <div>
-            <label htmlFor='to'>To</label>
-            <Dropdown
-              placeholder='Select Country'
-              fluid
-              search
-              selection
-              options={ratesArray}
-              value={to}
-              onChange={(e, { value }) => setTo(value)}
-            />
-          </div>
-        </Row>
-        <StyledButton onClick={handleSubmit} color='teal'>
-          Convert
-        </StyledButton>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor='amount'>Amount</label>
+          <StyledInput
+            type='number'
+            id='amount'
+            placeholder='Enter Amount'
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <Row>
+            <div>
+              <label htmlFor='from'>From</label>
+              <Dropdown
+                placeholder='Select Country'
+                fluid
+                search
+                selection
+                options={ratesArray}
+                value={fromCurrency}
+                onChange={(e, { value }) => setFromCurrency(value)}
+              />
+            </div>
+            <Icon title='Exhange' onClick={exChangeInput}>
+              <img src='exchange-arrows.png' alt='' width='25' />
+            </Icon>
+            <div>
+              <label htmlFor='to'>To</label>
+              <Dropdown
+                placeholder='Select Country'
+                fluid
+                search
+                selection
+                options={ratesArray}
+                value={toCurrency}
+                onChange={(e, { value }) => setToCurrency(value)}
+              />
+            </div>
+          </Row>
+          <StyledButton color='teal' loading={loading}>
+            Exchange
+          </StyledButton>
+        </form>
+        {result !== 0 && (
+          <Result>
+            {toCurrency} {addComma(result)}
+          </Result>
+        )}
       </CardBody>
     </StyledCard>
   )

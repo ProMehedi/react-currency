@@ -76,3 +76,14 @@ export const Icon = styled.span`
   align-items: center;
   justify-content: center;
 `
+
+export const Result = styled.div`
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+  color: #055160;
+  padding: 10px 15px;
+`
