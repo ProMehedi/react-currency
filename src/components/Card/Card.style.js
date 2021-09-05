@@ -43,7 +43,7 @@ export const StyledInput = styled(Input)`
 export const StyledButton = styled(Button)`
   margin-top: 15px !important;
   width: 100%;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
 `
 
 export const Row = styled.div`

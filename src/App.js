@@ -3,18 +3,27 @@ import axios from 'axios'
 
 import { Title, Wrapper } from './App.style'
 import Card from './components/Card'
+import Loader from './components/Loader'
 
 const App = () => {
+  const [loading, setLoading] = useState(true)
   const [rates, setRates] = useState({})
 
   const getRates = async () => {
     const { data } = await axios.get(process.env.REACT_APP_API_URL)
     setRates(data)
+    setTimeout(() => {
+      setLoading(false)
+    }, 1000)
   }
 
   useEffect(() => {
     getRates()
   }, [])
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <Wrapper>
