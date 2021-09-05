@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dropdown } from 'semantic-ui-react'
 
 import {
@@ -12,14 +12,17 @@ import {
 } from './Card.style'
 
 const Card = ({ data }) => {
+  const { rates } = data
+
   const [from, setFrom] = useState('USD')
   const [to, setTo] = useState('EUR')
   const [amount, setAmount] = useState('')
-  const [rate, setRate] = useState('')
+  const [rate, setRate] = useState(rates[data.base])
+  const [fromResult, setFromResult] = useState(0)
+  const [toResult, setToResult] = useState(0)
+  const [result, setResult] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-
-  const { rates } = data
 
   // convert Rates object to an array of objects
   const ratesArray = Object.keys(rates).map((key) => ({
@@ -33,13 +36,30 @@ const Card = ({ data }) => {
     setTo(from)
   }
 
-  console.log(rates[from], rates[to])
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(false)
+    setRate(rates[to])
+    setFromResult(amount * rates[from])
+    setToResult(amount * rates[to])
+    setResult(((amount * rates[to]) / rates[from]).toFixed(3))
+    setLoading(false)
+    console.log(rates[data.base])
+    console.log(data.base)
+    console.log('Amount:', amount, 'Rate:', rate, 'result:', result)
+  }
 
   return (
     <StyledCard>
       <CardHeader>
         <h3>Exchange Rate</h3>
-        <h1>1 USD = 0.00 USD</h1>
+        <h1>
+          1 {from} = {((1 * rates[to]) / rates[from]).toFixed(3)} {to}
+        </h1>
+        <h4>
+          {to} {result}
+        </h4>
       </CardHeader>
 
       <CardBody>
@@ -81,7 +101,9 @@ const Card = ({ data }) => {
             />
           </div>
         </Row>
-        <StyledButton color='teal'>Convert</StyledButton>
+        <StyledButton onClick={handleSubmit} color='teal'>
+          Convert
+        </StyledButton>
       </CardBody>
     </StyledCard>
   )
